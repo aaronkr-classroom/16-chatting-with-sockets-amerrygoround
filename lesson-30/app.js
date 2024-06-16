@@ -173,5 +173,5 @@ const server = app.listen(app.get("port"), () => {
   // 3000번 포트로 리스닝 설정
   console.log(`Server running at http://localhost:${app.get("port")}`);
 });
-// Lesson 30 - socket.io를 사용하기 위한 서버 객체 설정
-// Lesson 30 - 채팅 컨트롤러를 요청하고 서버 객체를 전달
+const io = require("Socket.io")(server); // Lesson 30 - socket.io를 사용하기 위한 서버 객체 설정
+require("./controllers/chatController")(io); // Lesson 30 - 채팅 컨트롤러를 요청하고 서버 객체를 전달

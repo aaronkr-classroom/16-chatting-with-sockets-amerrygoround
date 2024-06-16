@@ -1,6 +1,8 @@
 // public/js/modal.js
 "use strict";
 
+const { text } = require("express");
+
 /**
  * Listing 26.6 (p. 388)
  * @TODO: modal.js에서 모달에 데이터 로딩을 위한 Ajax 함수
@@ -13,14 +15,14 @@ $(document).ready(() => {
   const socket = io();
 
   $("#chat-form").submit(() => {
-    // Lesson 31.1 (p. 450)
-    // Lesson 31.4 (p. 452)
-    // Lesson 31.7 (p. 455)
+    let username = $("#chat-username").val(); // Lesson 31.1 (p. 450)
+    let username = $("#chat-user-id").val(); // Lesson 31.4 (p. 452)
+    let username = $("#chat-user-full-name").val(); // Lesson 31.7 (p. 455)
     let username = $("#chat-username").val();
     socket.emit("message", {
-      // Lesson 31.1 (p. 450)
-      // Lesson 31.4 (p. 452)
-      // Lesson 31.7 (p. 455)
+      content: text, // Lesson 31.1 (p. 450)
+      userId: userId, // Lesson 31.4 (p. 452)
+      fullName: userFullName, // Lesson 31.7 (p. 455)
       username: username,
     });
     $("#chat-input").val("");
@@ -31,6 +33,11 @@ $(document).ready(() => {
    * Listing 31.12 (p. 460)
    * 최근 메시지 표시
    */
+  socket.on("load all message", data => {
+    data.forEach(msg => {
+      displayMessage(msg);
+    });
+  });
 
   socket.on("message", (message) => {
     displayMessage(message);
@@ -144,3 +151,17 @@ let addJoinButtonListener = () => {
  * Listing 31.6 (p. 454)
  * 채팅 폼으로부터 hidden field 값 끌어오기
  */
+let displayMessage = (message) => {
+  $("#chat").prepend(
+    $("<li>").html(
+      `<strong class="message ${getCurrentUserClass(message.userId)}">
+      ${message.userFullNamme || message.username || "Anonymous"}
+      </strong>: ${message.content}`
+    )
+  );
+};
+
+let getCurrentUserClass = (id) => {
+  let userId = $("#chat-user-id").val();
+  return userId === id ? "current-user" : "";
+}
